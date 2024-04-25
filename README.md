@@ -20,11 +20,18 @@ As the base encoder, the [deberta-v3-base](https://huggingface.co/microsoft/debe
 
 The training dataset was taken from [15k_gpt3.5-turbo.csv](https://www.kaggle.com/datasets/mgoksu/llm-science-exam-dataset-w-context-extended) that contains 15k examples of STEM MCQs with contexts and their correct answers.
 
-The fine-tuned model was saved [here](https://www.kaggle.com/datasets/garvitagarwal/science-comp-trained-model).
+The fine-tuned model can be found [here](https://www.kaggle.com/datasets/garvitagarwal/science-comp-trained-model).
 
 ### 3) Bring everything together and answer questions
 
 This RAG model was evaluated on the [200 STEM MCQ](https://www.kaggle.com/competitions/kaggle-llm-science-exam/data?select=train.csv) questions provided in the LLM Science Exam Competition. For a given question, the question statement was turned into a sentence embedding again using the *multi-qa-mpnet-base-dot-v1* model. Next, the 10 most similar Wikipedia articles were identified using the nearest neighbor search functionality of the [Facebook AI Similarity Search (Faiss)](https://engineering.fb.com/2017/03/29/data-infrastructure/faiss-a-library-for-efficient-similarity-search/) library. 
 
 **Re-ranking** of these 10 articles was done using the [bge-reranker-base](https://huggingface.co/BAAI/bge-reranker-base) model. After re-ranking the most similar article was used as the context to the fine-tuned *deberta-v3-base* model and the scores assigned by it to the 5 options were recorded. 
+
+
+Taking the option with the highest score as the model's `answer', the above model answered only 63 questions correctly out of 200. This accuracy is not significantly more than a model that chose an option randomly out of the 5 options. The sub-par performance might be due to the following reasons:
+
+1) All the above steps were implemented on Kaggle and so were subjected to the GPU memory and time limitations. This limited the size of the answering/reader model.
+2) Limited context length: The maximum context length of our reader model was 512 tokens. This is likely not enough to accommodate many long Wikipedia articles which are hence truncated. The truncation might result in the loss of essential context required to answer the question. Hence an encoder model with a larger context length should perform better, however at the same time the limited GPU memory might cause a roadblock.
+3) 
 
