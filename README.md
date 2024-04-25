@@ -12,10 +12,11 @@ The details of each step are explained below:
 
 ### 1) Generating embeddings of STEM Wikipedia articles
 
-I used [this](https://www.kaggle.com/datasets/nbroad/wiki-20220301-en-sci) dataset of about 130000 Wikipedia articles. After a cleaning process that removes the references, external links etc, each article was converted into a 768-dimensional embedding by the sentence transformer [multi-qa-mpnet-base-dot-v1](https://huggingface.co/sentence-transformers/multi-qa-mpnet-base-dot-v1). The embeddings of all the articles are stored in the `retrieval-wiki-embeddings' folder.
+For generating embeddings, the dataset [wiki-20220301-en-sci](https://www.kaggle.com/datasets/nbroad/wiki-20220301-en-sci) which contains about 130000 Wikipedia articles was used. After a cleaning process that removes the references, external links etc, each article was converted into a 768-dimensional embedding by the sentence transformer [multi-qa-mpnet-base-dot-v1](https://huggingface.co/sentence-transformers/multi-qa-mpnet-base-dot-v1). The embeddings of all the articles are stored in the `retrieval-wiki-embeddings' folder.
 
 ### 2) Fine-tuning an encoder for MCQ answering task
 
+As the base encoder, the [deberta-v3-base](https://huggingface.co/microsoft/deberta-v3-base) model was used. Parameter efficient fine-tuning (PEFT) was done using LoRA (low-rank adaption) with rank = 8 and alpha = 8.
 
-
+The training dataset was taken from [15k_gpt3.5-turbo.csv](https://www.kaggle.com/datasets/mgoksu/llm-science-exam-dataset-w-context-extended) that contains 15k examples of STEM MCQs with contexts and their correct answers. 
 
